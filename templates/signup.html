@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h2>Signup</h2>
+    <form action="" method="post" id="signupForm" onsubmit="return validatePassword()">
+        {{ form.csrf_token }}
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required><br><br>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required><br>
+        <small>La contraseña debe incluir letras y números, combinar mayúsculas y minúsculas, incluir caracteres especiales, tener al menos 8 caracteres y no contener espacios en blanco.</small><br>
+        <input type="submit" value="Signup">
+    </form>
+
+    {% if error_message %}
+        <p>{{ error_message | safe }}</p>
+    {% endif %}
+    
+    <a href="{{ url_for('login') }}">¿Ya tienes una cuenta? Inicia sesión aquí</a>    
+
+    <script>
+        function validatePassword() {
+            var password = document.getElementById("password").value;
+            var hasUpperCase = /[A-Z]/.test(password);
+            var hasLowerCase = /[a-z]/.test(password);
+            var hasNumbers = /\d/.test(password);
+            var hasSpecialChars = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+            var hasNoWhiteSpace = /^\S*$/.test(password);
+            var isValid = true;
+
+            if (!hasUpperCase || !hasLowerCase || !hasNumbers || !hasSpecialChars || !hasNoWhiteSpace || password.length < 8) {
+                isValid = false;
+                alert("La contraseña no cumple con los requisitos.");
+            }
+
+            return isValid;
+        }
+    </script>
+</body>
+</html>

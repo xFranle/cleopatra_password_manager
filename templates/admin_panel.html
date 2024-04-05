@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Panel de Administrador</title>
+</head>
+<body>
+    <h1 class="container mt-3">Panel de Administrador</h1>
+    <table class="container mt-3 ">
+        <tr>
+            <th>Usuario</th>
+            <th>Rol</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+        </tr>
+        {% for user in users %}
+        <tr>
+            <td>{{ user[1] }}</td>
+            <td>{{ user[3] }}</td>
+            <td>{{ "Bloqueado" if user[5] else "Desbloqueado" }}</td>
+            <td>
+                {% if user[5] %}
+                <a href="{{ url_for('unblock_user', user_id=user[0]) }}" class="btn btn-primary">Desbloquear</a>
+                {% else %}
+                <a href="{{ url_for('block_user', user_id=user[0]) }}" class="btn btn-outline-danger">Bloquear</a>
+                {% endif %}
+                <!-- Formulario para eliminar usuario -->
+                <form action="{{ url_for('delete_user', user_id=user[0]) }}" method="post" style="display: inline;">
+                    <!-- Incluir el token CSRF -->
+                    {{ form.csrf_token }}
+                    <button type="submit" class="btn btn-danger" >Eliminar</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    <form action="{{ url_for('logout') }}" method="post" class="container mt-3">
+        {{ form.csrf_token }}
+        <button type="submit" class="btn btn-outline-danger">Cerrar sesión</button>
+    </form>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    
+    <div class="container">
+        <h2 class="d-flex align-items-center justify-content-center pb-4">Bienvenido al Panel, {{ username | safe }}</h2>
+        {% if passwords %}
+        <h2>Contraseñas Guardadas:</h2>
+        <ul class="list-group">
+            {% for password in passwords %}
+                <li class="list-group-item">
+                    <strong>Aplicación:</strong> {{ password[2] | safe }}<br>
+                    <strong>Usuario:</strong> {{ password[3] | safe }}<br>
+                    <strong>Contraseña:</strong> 
+                    <span id="password_{{ loop.index }}" class="password" data-real-password="{{ password[4] }}">********</span>
+                    <button class="btn btn-secondary" onclick="togglePassword(this)">Mostrar</button>
+                    <div>
+                        <strong>Detalles:</strong> {{ password[5] | safe }}<br>
+                    </div>
+                    <form action="/edit_password/{{ password[0] }}" method="post" id="editForm{{ loop.index }}" style="display: none;">
+                        <div class="form-group">
+                            <label for="edit_app_name{{ loop.index }}">Nombre de la Aplicación:</label>
+                            <input type="text" class="form-control" id="edit_app_name{{ loop.index }}" name="app_name" value="{{ password[2] | safe }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit_username{{ loop.index }}">Nombre de Usuario:</label>
+                            <input type="text" class="form-control" id="edit_username{{ loop.index }}" name="username" value="{{ password[3] | safe }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit_details{{ loop.index }}">Detalles Extras:</label>
+                            <textarea class="form-control" id="edit_details{{ loop.index }}" name="details">{{ password[5] | safe }}</textarea>
+                        </div>
+                        {{ form.csrf_token }}
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </form>
+                    <button class="btn btn-warning" onclick="toggleEditForm('{{ loop.index }}')">Editar</button>
+                    <form action="/delete_password/{{ password[0] }}" method="post" onsubmit="return confirm('¿Estás seguro de que quieres borrar esta contraseña?')">
+                        {{ form.csrf_token }}
+                        <input type="submit" class="btn btn-outline-danger" value="Borrar">
+                    </form>
+                    </form>
+                </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>No hay contraseñas generadas.</p>
+        {% endif %}
+    </div>
+ 
+
+    <form action="/add_password" method="post" class="container mt-5">
+        {{ form.csrf_token }}
+        <div class="form-group">
+            <label for="app_name">Nombre de la Aplicación:</label>
+            <input type="text" class="form-control" id="app_name" name="app_name">
+        </div>
+        <div class="form-group">
+            <label for="username">Nombre de Usuario:</label>
+            <input type="text" class="form-control" id="username" name="username">
+        </div>
+        <div class="form-group">
+            <label for="details">Detalles Extras:</label>
+            <textarea class="form-control" id="details" name="details"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Agregar Contraseña</button>
+    </form>    
+
+    <form action="{{ url_for('logout') }}" method="post" class="container mt-3 d-flex align-items-center justify-content-center pb-4">
+        {{ form.csrf_token }}
+        <button type="submit" class="btn btn-outline-danger">Cerrar sesión</button>
+    </form>
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        function togglePassword(button) {
+            var passwordField = button.previousElementSibling;
+            if (!passwordField) {
+                return; // Salir de la función si no se encuentra el campo de contraseña
+            }
+            if (passwordField.textContent === "********") {
+                passwordField.textContent = passwordField.dataset.realPassword;
+                button.textContent = "Ocultar";
+            } else {
+                passwordField.textContent = "********";
+                button.textContent = "Mostrar";
+            }
+        }
+        function toggleEditForm(index) {
+            var editForm = document.getElementById("editForm" + index);
+            editForm.style.display = (editForm.style.display === 'none') ? 'block' : 'none';
+        }
+        </script>   
+</body>
+</html>
