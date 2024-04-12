@@ -11,6 +11,7 @@ Aplicación web desarrollada con Python y Flask que permite a los usuarios almac
 ## Funcionalidades Destacadas:
 - **Autenticación Segura:** Implementación de Bcrypt para el cifrado de contraseñas, incluyendo la adición de salt para una mayor seguridad.
 - **Prevención de Ataques:** Validación de entrada para prevenir ataques de inyección SQL y cross-site scripting (XSS).
+- **Prevención contra Fuerza Bruta:** Bloqueo de cuenta luego de X intentos fallidos (Rol admin puede desbloquear cuenta).
 - **Control de Acceso:** Gestión de roles de usuario y administrador (IAM) para garantizar la seguridad y la privacidad de los datos.
 - **Protección CSRF:** Implementación de tokens CSRF en formularios para prevenir ataques de falsificación de solicitudes entre sitios.
 - **Políticas de Contraseña Seguras:** Implementación de políticas de contraseña seguras para garantizar contraseñas robustas y difíciles de adivinar.
